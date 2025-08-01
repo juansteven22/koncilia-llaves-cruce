@@ -1,0 +1,23 @@
+# 2.1 Inicializo carpeta raíz
+mkdir koncilia-llaves-cruce
+cd    koncilia-llaves-cruce
+dotnet new sln -n KonciliaLlavesCruce
+
+# 2.2 Carpeta de código
+mkdir src; cd src
+
+# 2.3 Proyecto consola para Ingesta (framework net8.0)
+dotnet new console -n Ingesta --framework net8.0
+dotnet sln ..\KonciliaLlavesCruce.sln add Ingesta/Ingesta.csproj
+
+# 2.4 Paquetes NuGet necesarios
+cd Ingesta
+dotnet add package Microsoft.Data.SqlClient
+dotnet add package CsvHelper
+dotnet add package System.Text.Json
+dotnet add package Microsoft.Extensions.Hosting
+dotnet add package Microsoft.Extensions.Logging.Console
+dotnet add package Microsoft.Extensions.Configuration.Json
+
+cd src\Ingesta
+dotnet add package Dapper
