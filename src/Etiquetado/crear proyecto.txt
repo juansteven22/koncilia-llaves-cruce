@@ -1,0 +1,15 @@
+# Ubícate en la raíz del repo
+cd koncilia-llaves-cruce
+
+# Crear proyecto Web API .NET 8 con Swagger (útil en local)
+mkdir src\Etiquetado
+cd    src\Etiquetado
+dotnet new webapi -n Etiquetado --framework net8.0
+
+# Agregar paquetes
+dotnet add package Microsoft.Data.SqlClient
+dotnet add package Dapper
+
+# Agregar el proyecto a tu solución
+cd ..
+dotnet sln ..\KonciliaLlavesCruce.sln add Etiquetado\Etiquetado.csproj

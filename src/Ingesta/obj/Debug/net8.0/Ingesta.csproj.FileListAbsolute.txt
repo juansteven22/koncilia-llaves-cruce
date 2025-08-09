@@ -92,3 +92,4 @@ C:\Users\JuanStevenMontenegro\Desktop\koncilia-llaves-cruce\src\Ingesta\obj\Debu
 C:\Users\JuanStevenMontenegro\Desktop\koncilia-llaves-cruce\src\Ingesta\obj\Debug\net8.0\Ingesta.pdb
 C:\Users\JuanStevenMontenegro\Desktop\koncilia-llaves-cruce\src\Ingesta\obj\Debug\net8.0\Ingesta.genruntimeconfig.cache
 C:\Users\JuanStevenMontenegro\Desktop\koncilia-llaves-cruce\src\Ingesta\obj\Debug\net8.0\ref\Ingesta.dll
+C:\Users\JuanStevenMontenegro\Desktop\koncilia-llaves-cruce\src\Ingesta\obj\Debug\net8.0\Ingesta.sourcelink.json

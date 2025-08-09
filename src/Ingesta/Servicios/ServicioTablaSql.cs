@@ -1,6 +1,14 @@
+// ServicioTablaSql.cs
+// Crea SIEMPRE la tabla (la borra primero si existía)
+
+using System.Collections.Generic;
+using System.Linq;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Ingesta.Utils;
+
+namespace Ingesta.Servicios;
 
 public class ServicioTablaSql
 {
@@ -9,32 +17,37 @@ public class ServicioTablaSql
 
     public ServicioTablaSql(SqlConnection cnn, ILogger<ServicioTablaSql> log)
     {
-        _cnn = cnn; _log = log;
+        _cnn = cnn;
+        _log = log;
     }
 
-// …using…
-// Cuando devuelvo el nombre, incluyo el esquema dbo
-public string AsegurarTabla(string tablaSinEsquema, IEnumerable<string> columnas)
-{
-    string tablaDestino = $"[dbo].[{tablaSinEsquema}]";
-
-    // resto del código igual, pero uso tablaDestino en la consulta Dapper
-    var existe = _cnn.ExecuteScalar<int>(
-        "SELECT COUNT(*) FROM sys.tables WHERE name = @n", new { n = tablaSinEsquema });
-
-    if (existe == 0)
+    /// <summary>
+    /// Elimina la tabla si ya existe y la crea de nuevo
+    /// </summary>
+    public string AsegurarTabla(string tablaBase, IEnumerable<(string Col, string SqlType)> columnas)
     {
-        var colsSql = string.Join(", ", columnas.Select(c => $"[{c}] NVARCHAR(MAX)"));
-        var ddl = $"""
+        string tablaSegura  = NombreSeguro.Limpiar(tablaBase);
+        string tablaDestino = $"[dbo].[{tablaSegura}]";
+
+        /* 1️⃣  DROP TABLE IF EXISTS */
+        string drop = $"IF OBJECT_ID('{tablaDestino}', 'U') IS NOT NULL DROP TABLE {tablaDestino}";
+        _cnn.Execute(drop);
+        _log.LogInformation("Tabla {tabla} eliminada (si existía).", tablaDestino);
+
+        /* 2️⃣  CREATE TABLE nueva */
+        string columnasSql = string.Join(", ",
+            columnas.Select(c => $"[{c.Col}] {c.SqlType} NULL"));
+
+        string ddl = $"""
             CREATE TABLE {tablaDestino} (
                 Id INT IDENTITY(1,1) PRIMARY KEY,
-                {colsSql}
+                {columnasSql}
             );
         """;
+
         _log.LogInformation("Creo tabla {tabla}…", tablaDestino);
         _cnn.Execute(ddl);
-    }
-    return tablaDestino;      // devuelvo [dbo].[tabla_limpia]
-}
 
+        return tablaDestino;
+    }
 }
